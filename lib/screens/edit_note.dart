@@ -20,7 +20,7 @@ class _EditNoteState extends State<EditNote> {
   TextEditingController title = TextEditingController();
   TextEditingController note = TextEditingController();
   TextEditingController color = TextEditingController();
-
+  String errorText = '';
   @override
   void initState() {
     super.initState();
@@ -61,18 +61,34 @@ class _EditNoteState extends State<EditNote> {
                   label: Text('Color'), border: OutlineInputBorder()),
             ),
             const SizedBox(height: 8),
+            Text(errorText),
+            const SizedBox(height: 20),
             ElevatedButton(
                 onPressed: () async {
-                  title.text.trim().isNotEmpty ||
-                          note.text.trim().isNotEmpty ||
-                          color.text.trim().isNotEmpty
-                      ? await sqldb.updateData('''UPDATE Notes SET
+                  if (title.text.trim().isNotEmpty ||
+                      note.text.trim().isNotEmpty ||
+                      color.text.trim().isNotEmpty) {
+                    await sqldb.updateData('''UPDATE Notes SET
                           Title =   '${title.text}',
                           Note =   '${note.text}',
                           Color =   '${color.text}'
                           WHERE id= $id
-                           ''')
-                      : print('Error');
+                           ''');
+                    await sqldb.update(
+                      'Notes',
+                      {
+                        'Title': title.text,
+                        'Note': note.text,
+                        'Color': color.text,
+                      },
+                      'id= $id',
+                    );
+                  } else {
+                    setState(() {
+                      errorText =
+                          'Please Check Title, Note and Color is not empty';
+                    });
+                  }
                   // ignore: use_build_context_synchronously
                   Navigator.pushAndRemoveUntil(
                       context,

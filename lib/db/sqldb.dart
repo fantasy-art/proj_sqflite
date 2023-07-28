@@ -47,6 +47,7 @@ class SqlDb {
     print('On Creete Database');
   }
 
+  //First way
   readData(String sql) async {
     Database? mydb = await db;
     List<Map> response = await mydb!.rawQuery(sql);
@@ -68,6 +69,31 @@ class SqlDb {
   deleteData(String sql) async {
     Database? mydb = await db;
     int response = await mydb!.rawDelete(sql);
+    return response;
+  }
+
+  //second way
+  read(String table) async {
+    Database? mydb = await db;
+    List<Map> response = await mydb!.query(table);
+    return response;
+  }
+
+  insert(String table, Map<String, Object?> values) async {
+    Database? mydb = await db;
+    int response = await mydb!.insert(table, values);
+    return response;
+  }
+
+  update(String table, Map<String, Object?> values, String mywhere) async {
+    Database? mydb = await db;
+    int response = await mydb!.update(table, values, where: mywhere);
+    return response;
+  }
+
+  delete(String table, String? mywhere) async {
+    Database? mydb = await db;
+    int response = await mydb!.delete(table, where: mywhere);
     return response;
   }
 }

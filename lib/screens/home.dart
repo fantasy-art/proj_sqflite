@@ -14,7 +14,8 @@ class _HomeState extends State<Home> {
 
   List notes = [];
   Future readData() async {
-    List<Map> response = await sqldb.readData('SELECT * From Notes');
+    //List<Map> response = await sqldb.readData('SELECT * From Notes');
+    List<Map> response = await sqldb.read('Notes');
     notes.addAll(response);
     isLoading = false;
     if (mounted) {
@@ -79,8 +80,10 @@ class _HomeState extends State<Home> {
                                   ),
                                   IconButton(
                                     onPressed: () async {
-                                      int response = await sqldb.deleteData(
-                                          "DELETE FROM Notes WHERE id=${notes[index]['id']}");
+                                      // int response = await sqldb.deleteData(
+                                      //     "DELETE FROM Notes WHERE id=${notes[index]['id']}");
+                                      int response = await sqldb.delete(
+                                          'Notes', 'id=${notes[index]['id']}');
                                       if (response > 0) {
                                         notes.removeWhere((element) =>
                                             element['id'] ==

@@ -56,8 +56,18 @@ class _AddNoteState extends State<AddNote> {
                   if (title.text.trim().isNotEmpty ||
                       note.text.trim().isNotEmpty ||
                       color.text.trim().isNotEmpty) {
-                    await sqldb.insertData(
-                        "INSERT INTO Notes (Title, Note, Color) VALUES('${title.text}', '${note.text}', '${color.text}')");
+                    /*    await sqldb.insertData('''INSERT INTO Notes 
+                        (Title, Note, Color) 
+                        VALUES(
+                          '${title.text}',
+                          '${note.text}',
+                          '${color.text}')
+                          '''); */
+                    await sqldb.insert("Notes", {
+                      'Title': title.text,
+                      'Note': note.text,
+                      'Color': color.text,
+                    });
 
                     // ignore: use_build_context_synchronously
                     Navigator.pushAndRemoveUntil(
@@ -70,7 +80,6 @@ class _AddNoteState extends State<AddNote> {
                     setState(() {
                       errorText =
                           'Please Check Title, Note and Color is not empty';
-                      print(errorText);
                     });
                   }
                 },
