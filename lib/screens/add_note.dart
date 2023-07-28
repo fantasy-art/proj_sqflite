@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:proj_sqflite/screens/home.dart';
 import 'package:proj_sqflite/service/sqldb.dart';
 
+import '../service/color.dart';
+
 class AddNote extends StatefulWidget {
   const AddNote({super.key});
   @override
@@ -23,12 +25,7 @@ class _AddNoteState extends State<AddNote> {
   String errorText = '';
   Color? _selectedColor;
   String? part;
-  final List<Color> filtersColor = [
-    Colors.blue,
-    Colors.yellow,
-    Colors.orange,
-    Colors.red,
-  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

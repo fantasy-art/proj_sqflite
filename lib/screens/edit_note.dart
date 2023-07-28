@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:proj_sqflite/screens/home.dart';
 import 'package:proj_sqflite/service/sqldb.dart';
 
+import '../service/color.dart';
+
 class EditNote extends StatefulWidget {
   const EditNote({super.key});
 
@@ -20,15 +22,11 @@ class _EditNoteState extends State<EditNote> {
   TextEditingController title = TextEditingController();
   TextEditingController note = TextEditingController();
   TextEditingController color = TextEditingController();
+
   String errorText = '';
   Color? _selectedColor;
   String? part;
-  final List<Color> filtersColor = [
-    Colors.blue,
-    Colors.yellow,
-    Colors.orange,
-    Colors.red,
-  ];
+
   @override
   void initState() {
     super.initState();
