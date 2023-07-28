@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:proj_sqflite/screens/home.dart';
-import 'package:proj_sqflite/db/sqldb.dart';
+import 'package:proj_sqflite/service/sqldb.dart';
 
 class EditNote extends StatefulWidget {
-  const EditNote({super.key, required this.title});
-  final String title;
+  const EditNote({super.key});
+
   @override
   State<EditNote> createState() => _EditNoteState();
 }
@@ -21,6 +21,14 @@ class _EditNoteState extends State<EditNote> {
   TextEditingController note = TextEditingController();
   TextEditingController color = TextEditingController();
   String errorText = '';
+  Color? _selectedColor;
+  String? part;
+  final List<Color> filtersColor = [
+    Colors.blue,
+    Colors.yellow,
+    Colors.orange,
+    Colors.red,
+  ];
   @override
   void initState() {
     super.initState();
@@ -33,7 +41,8 @@ class _EditNoteState extends State<EditNote> {
     title.text = data["Title"];
     note.text = data["Note"];
     color.text = data["Color"];
-    print(id);
+
+    //_selectedColor = Color(int.parse(data['Color']));
 
     return Scaffold(
       appBar: AppBar(
@@ -48,17 +57,52 @@ class _EditNoteState extends State<EditNote> {
               decoration: const InputDecoration(
                   label: Text('Title'), border: OutlineInputBorder()),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             TextField(
               controller: note,
               decoration: const InputDecoration(
                   label: Text('Note'), border: OutlineInputBorder()),
             ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: color,
-              decoration: const InputDecoration(
-                  label: Text('Color'), border: OutlineInputBorder()),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Text('Choose Color: '),
+                Expanded(
+                  child: Container(
+                    foregroundDecoration: BoxDecoration(
+                        border: Border.all(color: Colors.black54)),
+                    height: 30,
+                    color: _selectedColor,
+                    child: DropdownButton(
+                      iconSize: 0,
+                      underline: const SizedBox(),
+                      alignment: Alignment.centerRight,
+                      value: _selectedColor,
+                      items: filtersColor
+                          .map(
+                            (colorItem) => DropdownMenuItem(
+                              value: colorItem,
+                              child: Container(
+                                color: colorItem,
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value == null) {
+                            return;
+                          }
+                          setState(() {
+                            part = value.toString().substring(35, 45);
+                            _selectedColor = value;
+                          });
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             Text(errorText),
@@ -68,18 +112,18 @@ class _EditNoteState extends State<EditNote> {
                   if (title.text.trim().isNotEmpty ||
                       note.text.trim().isNotEmpty ||
                       color.text.trim().isNotEmpty) {
-                    await sqldb.updateData('''UPDATE Notes SET
-                          Title =   '${title.text}',
-                          Note =   '${note.text}',
-                          Color =   '${color.text}'
-                          WHERE id= $id
-                           ''');
+                    // await sqldb.updateData('''UPDATE Notes SET
+                    //       Title =   '${title.text}',
+                    //       Note =   '${note.text}',
+                    //       Color =   '$part'
+                    //       WHERE id= $id
+                    //        ''');
                     await sqldb.update(
                       'Notes',
                       {
                         'Title': title.text,
                         'Note': note.text,
-                        'Color': color.text,
+                        'Color': part,
                       },
                       'id= $id',
                     );

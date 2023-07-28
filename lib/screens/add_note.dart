@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proj_sqflite/screens/home.dart';
-import 'package:proj_sqflite/db/sqldb.dart';
+import 'package:proj_sqflite/service/sqldb.dart';
 
 class AddNote extends StatefulWidget {
   const AddNote({super.key});
@@ -21,6 +21,14 @@ class _AddNoteState extends State<AddNote> {
   TextEditingController color = TextEditingController();
 
   String errorText = '';
+  Color? _selectedColor;
+  String? part;
+  final List<Color> filtersColor = [
+    Colors.blue,
+    Colors.yellow,
+    Colors.orange,
+    Colors.red,
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,17 +44,54 @@ class _AddNoteState extends State<AddNote> {
               decoration: const InputDecoration(
                   label: Text('Title'), border: OutlineInputBorder()),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             TextField(
               controller: note,
               decoration: const InputDecoration(
                   label: Text('Note'), border: OutlineInputBorder()),
             ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: color,
-              decoration: const InputDecoration(
-                  label: Text('Color'), border: OutlineInputBorder()),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Text('Choose Color: '),
+                Expanded(
+                  child: SizedBox(
+                    child: Container(
+                      foregroundDecoration: BoxDecoration(
+                          border: Border.all(color: Colors.black54)),
+                      height: 30,
+                      color: _selectedColor,
+                      child: DropdownButton(
+                        iconSize: 0,
+                        underline: const SizedBox(),
+                        alignment: Alignment.centerRight,
+                        value: _selectedColor,
+                        items: filtersColor
+                            .map(
+                              (colorItem) => DropdownMenuItem(
+                                value: colorItem,
+                                child: Container(
+                                  color: colorItem,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            if (value == null) {
+                              return;
+                            }
+                            setState(() {
+                              part = value.toString().substring(35, 45);
+                              _selectedColor = value;
+                            });
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             Text(errorText),
@@ -55,7 +100,7 @@ class _AddNoteState extends State<AddNote> {
                 onPressed: () async {
                   if (title.text.trim().isNotEmpty ||
                       note.text.trim().isNotEmpty ||
-                      color.text.trim().isNotEmpty) {
+                      _selectedColor != null) {
                     /*    await sqldb.insertData('''INSERT INTO Notes 
                         (Title, Note, Color) 
                         VALUES(
@@ -66,7 +111,7 @@ class _AddNoteState extends State<AddNote> {
                     await sqldb.insert("Notes", {
                       'Title': title.text,
                       'Note': note.text,
-                      'Color': color.text,
+                      'Color': part,
                     });
 
                     // ignore: use_build_context_synchronously

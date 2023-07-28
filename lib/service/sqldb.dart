@@ -17,7 +17,7 @@ class SqlDb {
     String dbPath = await getDatabasesPath();
     String path = join(dbPath, 'yahya.db');
     Database mydb = await openDatabase(path,
-        onCreate: _onCreate, version: 7, onUpgrade: _onUpgrade);
+        onCreate: _onCreate, version: 8, onUpgrade: _onUpgrade);
     return mydb;
   }
 
@@ -40,7 +40,7 @@ class SqlDb {
         (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         Title TEXT NOT NULL,
         Note TEXT NOT NULL,
-        Color TEXT
+        Color TEXT NOT NULL
         )''');
     await batch.commit();
 

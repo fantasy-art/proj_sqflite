@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:proj_sqflite/db/sqldb.dart';
+import 'package:proj_sqflite/service/sqldb.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -11,7 +11,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   SqlDb sqldb = SqlDb();
   bool isLoading = true;
-
+  Color? textColor;
   List notes = [];
   Future readData() async {
     //List<Map> response = await sqldb.readData('SELECT * From Notes');
@@ -27,6 +27,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+
     readData();
   }
 
@@ -56,12 +57,19 @@ class _HomeState extends State<Home> {
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemBuilder: (context, index) => Card(
+                            color: Color(int.parse(notes[index]['Color'])),
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 5),
                             child: ListTile(
                               leading: CircleAvatar(
                                 backgroundColor: Theme.of(context).canvasColor,
                                 child: Text((index + 1).toString()),
                               ),
-                              title: Text(notes[index]['Title'].toString()),
+                              title: Text(
+                                notes[index]['Title'].toString().toUpperCase(),
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
                               subtitle: Text(notes[index]['Note'].toString()),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
