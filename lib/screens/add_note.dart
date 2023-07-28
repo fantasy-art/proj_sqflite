@@ -20,6 +20,7 @@ class _AddNoteState extends State<AddNote> {
   TextEditingController note = TextEditingController();
   TextEditingController color = TextEditingController();
 
+  String errorText = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,23 +49,32 @@ class _AddNoteState extends State<AddNote> {
                   label: Text('Color'), border: OutlineInputBorder()),
             ),
             const SizedBox(height: 8),
+            Text(errorText),
+            const SizedBox(height: 20),
             ElevatedButton(
                 onPressed: () async {
-                  title.text.trim().isNotEmpty ||
-                          note.text.trim().isNotEmpty ||
-                          color.text.trim().isNotEmpty
-                      ? await sqldb.insertData(
-                          "INSERT INTO Notes (Title, Note, Color) VALUES('${title.text}', '${note.text}', '${color.text}')")
-                      : print('Error');
-                  // ignore: use_build_context_synchronously
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Home(),
-                      ),
-                      (route) => false);
+                  if (title.text.trim().isNotEmpty ||
+                      note.text.trim().isNotEmpty ||
+                      color.text.trim().isNotEmpty) {
+                    await sqldb.insertData(
+                        "INSERT INTO Notes (Title, Note, Color) VALUES('${title.text}', '${note.text}', '${color.text}')");
+
+                    // ignore: use_build_context_synchronously
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Home(),
+                        ),
+                        (route) => false);
+                  } else {
+                    setState(() {
+                      errorText =
+                          'Please Check Title, Note and Color is not empty';
+                      print(errorText);
+                    });
+                  }
                 },
-                child: const Text('Save'))
+                child: const Text('Add Note'))
           ],
         ),
       ),

@@ -81,7 +81,7 @@ class _EditNoteState extends State<EditNote> {
                       ),
                       (route) => false);
                 },
-                child: const Text('Save'))
+                child: const Text('Edit Note'))
           ],
         ),
       ),
