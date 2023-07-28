@@ -25,11 +25,11 @@ class SqlDb {
     String dbPath = await getDatabasesPath();
     String path = join(dbPath, 'yahya.db');
     await deleteDatabase(path);
-    print('Database Deleted');
+    //print('Database Deleted');
   }
 
   _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    print('On Upgrade Database');
+    //print('On Upgrade Database');
     // await db.execute('ALTER TABLE Notes ADD COLUMN Color TEXT');
   }
 
@@ -44,7 +44,7 @@ class SqlDb {
         )''');
     await batch.commit();
 
-    print('On Creete Database');
+    //print('On Creete Database');
   }
 
   //First way
